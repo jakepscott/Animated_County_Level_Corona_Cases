@@ -23,8 +23,22 @@ county_animation <- function(state="Alabama", start="2020-01-20",end=Sys.Date()-
 # Setting Parameters ------------------------------------------------------
   # Loading In Raw Data -----------------------------------------------------
   cat("Loading Data")
-  US_Data <- read_rds("data/US_Data.RDS") %>% 
+  US_Data <- read_csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")) 
+  county_pop_clean <- read_rds("data/county_pop_clean.RDS")
+  state_pop_clean <- read_rds("data/state_pop_clean.RDS")
+  US_Data <- left_join(US_Data,state_pop_clean,by="state")
+  US_Data <- left_join(US_Data,county_pop_clean, by=c("state","county"))
+  
+  US_Data <- US_Data %>% 
+    rename("State"=state,"County"=county,"Date"=date, "Cases"=cases,"Deaths"=deaths) %>% 
     filter(State==state, County!="Unknown", !is.na(fips))
+  
+  State_abbs <- tibble(abb=state.abb,State=state.name)
+  
+  US_Data <- left_join(US_Data,State_abbs)
+  
+  US_Data <- US_Data %>% mutate(County_Population=ifelse(County=="New York City",8399000,County_Population))
+ 
   county_map <- read_sf("data/cb_2018_us_county_5m/cb_2018_us_county_5m.shp") %>% 
     rename("County"=NAME,"fips"=GEOID) %>% 
     filter(fips %in% US_Data$fips)
@@ -71,7 +85,7 @@ county_animation <- function(state="Alabama", start="2020-01-20",end=Sys.Date()-
     mutate(New_Cases=Cases-lag(Cases), ##New cases is today's cases minus yesterdays
            New_Cases_Avg=rollmean(New_Cases,k = rollmean,fill = NA, align = "right"),
            New_Deaths=Deaths-lag(Deaths), ##New cases is today's cases minus yesterdays
-           New_Deaths_Avg=rollmean(Deaths,k = rollmean,fill = NA, align = "right")) %>% # this just gets a 7 day rolling average
+           New_Deaths_Avg=rollmean(New_Deaths,k = rollmean,fill = NA, align = "right")) %>% # this just gets a 7 day rolling average
     ungroup() %>%
     mutate(New_Cases_Per_100k=(New_Cases/Population)*100000,
            New_Deaths_Per_100k=(New_Deaths/Population)*100000,
