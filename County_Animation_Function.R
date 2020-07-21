@@ -1,12 +1,7 @@
-library(shiny)
 library(tidyverse)
 library(lubridate)
-library(geofacet)
 library(scales)
 library(zoo)
-library(ggtext) 
-library(ggthemes)
-library(shinythemes)
 library(gganimate)
 library(sf)
 
@@ -163,4 +158,4 @@ county_animation <- function(state="Alabama", start="2020-01-20",end=Sys.Date()-
                  height = 500)  
   gif  
 }
-county_animation(state = "New York")
+county_animation(state = "New York", start = "2020-07-01")
