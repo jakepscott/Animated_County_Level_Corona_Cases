@@ -55,22 +55,5 @@ state_pop_clean <- state_pop_clean %>% select(`table with row headers in column 
   mutate(state=str_remove(state,"."))
 saveRDS(state_pop_clean,"data/state_pop_clean.RDS")
 
-##############################################################
-##Cleaning Corona Data, do this each time you a new update
-##############################################################
-#Prereq data
-State_Names <- read_rds("data/State_Names.RDS")
-county_pop_clean <- read_rds("data/county_pop_clean.RDS")
-state_pop_clean <- read_rds("data/state_pop_clean.RDS")
-county_map <- read_rds("data/county_map.RDS")
-state_map <- read_rds("data/state_map.RDS")
 
-US_Data_Raw <- read_csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"))
-
-US_Data <- left_join(US_Data_Raw,State_Names, by=c("state"))
-US_Data <- left_join(US_Data,state_pop_clean,by="state")
-US_Data <- left_join(US_Data,county_pop_clean, by=c("state","county")) %>%
-  rename("County"=county,"State"=state, "Date"=date, "Cases"=cases,"Deaths"=deaths)
-US_Data <- US_Data %>% filter(State %in% State_Names$state | State=="District of Columbia")
-saveRDS(US_Data,"data/US_Data.RDS")
           

@@ -163,4 +163,4 @@ county_animation <- function(state="Alabama", start="2020-01-20",end=Sys.Date()-
                  height = 500)  
   gif  
 }
-county_animation()
+county_animation(state = "New York")
