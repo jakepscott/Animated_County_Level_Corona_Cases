@@ -1,5 +1,5 @@
 # Animated Coronavirus Cases/Deaths by County Function
-Code for a function that generates an animated map showing new cases/deaths by county for a given state.
+Code for a function that generates an animated map showing new cases/deaths by county for a given state. The funciton relies on data from the New York Times Coronavirus [repo](https://github.com/nytimes/covid-19-data), and leans heavily on the [sf package](https://cran.r-project.org/web/packages/sf/index.html) for mapping. The shapefiles come from the [Census Bureau](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html). Population estimates also from the [Census Bureau](https://www.census.gov/data/tables/time-series/demo/popest/2010s-counties-total.html). 
 
 ## Getting Started
 
